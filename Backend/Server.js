@@ -1,31 +1,39 @@
 const express = require("express");
 const app = express();
 require("./db/conn");
-const LoginData = require("./model/login");
+const UserData = require("./model/UserData");
+const Datarouter = require("./router/router");
 
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 
-app.post("/",async(req, res)=>{
-    try{
-        const {email, password} = req.body;    
-        const IsValid = await LoginData.findOne({email: email});
-        if(!IsValid){
-           return res.send("Data is Not Present");
-        }
-        if(password=== IsValid.password){
-            console.log("password Match");
-        }else{
-            return res.send("Password wrong");
-        }
-        res.send("SuccessFUll Login");
-    }catch(e){
-        res.send("error from post Api Login");
-    }
-})
+app.use("/auth/api",Datarouter);
+
 
 app.listen(PORT , ()=>{
     console.log("Port no is ", PORT);
     
 })
+
+
+
+
+
+
+
+
+// app.post("/register",async(req, res)=>{
+//     const {name, email, password} = req.body;
+//     const Ispresent = await UserData.findOne({email:email});
+//     if(Ispresent){
+//         return res.status(400).send("User already exist");
+//     }
+//     const data = new UserData({
+//         name: name,
+//         email: email,
+//         password: password
+//     })
+//     const dataSave = await data.save();
+//     res.status(201).send(dataSave);
+// })
